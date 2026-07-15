@@ -23,7 +23,8 @@ int main(){
     if(strcmp(user,username)==0 && strcmp(pass,password)==0){
         printf("correct credentials");
     }
-    else{
+    else
+    {
         printf("wrong credentials");
     }
     fclose(fp);
