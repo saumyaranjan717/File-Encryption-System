@@ -21,12 +21,12 @@ The project demonstrates core security concepts such as password hashing, encryp
 
 ## Project Structure
 
-Secure-File-Management-System/
+Secure-File-Management-System
 
-├── src/              # Main C source files
-├── practice/         # Practice programs and experiments
-├── tests/            # Testing files
-├── data/             # Database and runtime files
+├── src/              
+├── practice/         
+├── tests/            
+├── data/             
 ├── README.md
 └── .gitignore
 
