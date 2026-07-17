@@ -19,17 +19,6 @@ The project demonstrates core security concepts such as password hashing, encryp
 * Secure file deletion by overwriting file contents
 * Input validation and error handling
 
-## Project Structure
-
-Secure-File-Management-System
-
-├── src/              
-├── practice/         
-├── tests/            
-├── data/             
-├── README.md
-└── .gitignore
-
 ## Technologies Used
 
 * Language: C
