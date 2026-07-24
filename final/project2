@@ -1,0 +1,292 @@
+#include<stdio.h>
+#include<string.h>
+/*
+int register_user(){
+char username[50];
+char password[50];
+printf("enter username-");
+scanf("%s",username);
+printf("enter password-");
+scanf("%s",password);
+FILE *fp;
+fp=fopen("files.txt","a");
+if(fp == NULL){
+printf("error\n");
+}
+else{
+fprintf(fp, "%s %s",username,password);
+fclose(fp);
+}
+return 0;
+}
+
+int login(){
+char username[50];
+char password[50];
+char str_user[50];
+char str_pass[50];
+printf("enter username-");
+scanf("%s",str_user);
+printf("enter password-");
+scanf("%s",str_pass);
+FILE *fp;
+fp=fopen("files.txt","r");
+if(fp == NULL){
+printf("error\n");
+}
+fprintf(fp, "%s %s",username,password);
+if(strcmp(username,str_user) == 0 && strcmp(password,str_pass) == 0){
+printf("login success");
+}
+return 0;
+}
+*/
+int register_user(){
+char username[50];
+char password[50];
+char user_password[50];
+char user_username[50];
+int choice;
+printf("1.Register\n");
+printf("2.Login\n");
+printf("Choose option(1 or 2):");
+scanf("%d",&choice);
+
+FILE *fp;
+if(choice == 1){
+printf("enter username:");
+scanf("%s",username);
+printf("enter password:");
+scanf("%s",password);
+fp=fopen("user_system.txt","a");
+        if(fp == NULL){
+                printf("error\n");
+                return 0;
+                }
+fprintf(fp,"%s %s\n", username,password);
+fclose(fp);
+return 0;
+}
+
+if(choice == 2){
+char username[50];
+char password[50];
+char stored_username[50];
+char stored_password[50];
+fp=fopen("user_system.txt","r");
+if(fp == NULL){
+printf("error\n");
+return 0;
+}
+printf("username:");
+scanf("%s",username);
+printf("password:");
+scanf("%s",password);
+while(fscanf(fp,"%s %s", stored_username,stored_password) == 2){
+        if(strcmp(username,stored_username) == 0 && strcmp(password,stored_password) == 0)
+        {
+        printf("Login successful\n");
+        fclose(fp);
+        return 1;
+        }
+}
+printf("login error\n");
+fclose(fp);
+return 0;
+}
+return 0;
+}
+void perform_task1(){
+printf("Task 1: Implement XOR Encryption (16-bit) in C\n");
+int key;
+char text[600];
+printf("enter key-");
+scanf("%d",&key);
+printf("enter text-");
+scanf("%s",text);
+char enc[500];
+char dec[500];
+for(int i=0;i<strlen(text);i++){
+enc[i]=text[i]^key;
+}
+printf("encrypted text=%s\n",enc);
+for(int i=0;i<strlen(text);i++){
+dec[i]=enc[i]^key;
+}
+printf("decrypted text=%s\n",dec);
+}
+
+
+void perform_task2(){
+printf("Task 2: File Creation with XOR Encryption\n");
+char filename[50];
+char text[50];
+int i;
+int key;
+char enc[500];
+FILE *fp;
+printf("enter filename:");
+scanf("%s",filename);
+printf("enter text:");
+scanf("%s",text);
+printf("enter key:");
+scanf("%d",&key);
+fp=fopen(filename,"w");
+for(i=0; i<strlen(text); i++){
+enc[i]=text[i]^key;
+}
+enc[i++]='\0';
+
+fprintf(fp, "%s", enc);
+printf("encrypted text-%s\n",enc);
+fclose(fp);
+}
+
+void perform_task3(){
+printf("Task 3: Reading Encrypted Files\n");
+char filename[50];
+char dec[50];
+char text[50];
+int key;
+int i;
+FILE *fp;
+printf("enter filename-");
+scanf("%s",filename);
+printf("enter key-");
+scanf("%d",&key);
+fp=fopen(filename,"r");
+if(fp==NULL){
+printf("error\n");
+return;
+}
+while(fscanf(fp,"%s",text) ==1){
+for(i=0; i<strlen(text); i++){
+dec[i]=text[i]^key;
+}
+dec[i++]='\0';
+fprintf(fp,"%s",dec);
+printf("decrypted text-%s\n",dec);
+};
+fclose(fp);
+}
+
+
+void perform_task4(){
+printf("Task 4: Appending to Existing Encrypted Files\n");
+char filename[50];
+char new_data[50];
+int key;
+int i;
+char text[100];
+FILE *fp;
+printf("enter existing filename-");
+scanf("%s",filename);
+printf("enter text to append-");
+scanf("%s",new_data);
+printf("enter key-");
+scanf("%d",&key);
+fp=fopen(filename,"r");
+if(fp==NULL){
+printf("error");
+return;
+}
+fscanf(fp,"%s",text);
+fclose(fp);
+for(i=0; i<strlen(text); i++){
+text[i]=text[i]^key;
+}
+strcat(text,new_data);
+printf("appended text is-%s\n",text);
+for(i=0; i<strlen(text); i++){
+text[i]=text[i]^key;
+}
+fp=fopen(filename,"w");
+fprintf(fp,"%s",text);
+fclose(fp);
+}
+
+/*
+void perform_task4(){
+printf("Task 4: Appending to Existing Encrypted Files\n");
+char filename[50];
+char new_data[50];
+int key;
+char text[50];
+FILE *fp;
+printf("enter existing filename-");
+scanf("%s",filename);
+printf("enter text to append-");
+scanf("%s",new_data);
+fp=fopn(filename,"a");
+if(fp==NULL){
+printf("error");
+}
+fscanf(fp,"%s",text);
+fclose(fp);
+for(i=0; i<strlen(text); i++){
+text[i]=text[i]^key;
+}
+fir(int j=0;j<strlen(new_data);j++){
+
+*/
+void perform_task5(){
+printf("Task 5: Logging File Operations\n");
+char username[50];
+char operation[50];
+char filename[50];
+FILE *fp;
+printf("username-");
+scanf("%s",username);
+printf("enter already existing filename-");
+scanf("%s",filename);
+printf("enter the operation(READ, WRITE, ENCRYPT, DECRYPT, DELETE)-");
+scanf("%s",operation);
+fp=fopen("filename","a");
+fprintf(fp,"%s %s %s\n",username,operation,filename);
+fclose(fp);
+printf("log saved\n");
+return;
+}
+
+void perform_task6(){
+printf("Task 6: Secure File Deletion\n");
+char filename[50];
+char username[50];
+FILE *fp;
+printf("enter your username:");
+scanf("%s",username);
+printf("enter file to delete:");
+scanf("%s",filename);
+fp=fopen("filename","r");
+if(remove(filename)==0){
+printf("file deleted\n");
+}
+else{
+printf("file not deleted\n");
+}
+return;
+}
+
+int main(){
+
+int login=0;
+while(!login){
+login=register_user();
+}
+int task;
+printf("Task 1: Implement XOR Encryption (16-bit) in C\n");
+printf("Task 2: File Creation with XOR Encryption\n");
+printf("Task 3: Reading Encrypted Files\n");
+printf("Task 4: Appending to Existing Encrypted Files\n");
+printf("Task 5: Logging File Operations\n");
+printf("Task 6: Secure File Deletion\n");
+printf("choose one task:");
+scanf("%d",&task);
+if(task == 1) perform_task1();
+if(task == 2) perform_task2();
+if(task == 3) perform_task3();
+if(task == 4) perform_task4();
+if(task == 5) perform_task5();
+if(task == 6) perform_task6();
+return 0;
+}
