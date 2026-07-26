@@ -1,0 +1,492 @@
+Task 0: User Registration and Authentication
+
+Expected Input:
+
+Username and Password from user input
+
+Expected Output:
+
+User credentials securely stored; user can log in with valid credentials
+
+Test Cases:
+
+
+1. Register with username "user1" and password "pass123" → success
+2. Attempt login with username "user1" and wrong password → failure
+3. Register with existing username → error
+4. Login with valid credentials → success
+ 
+
+Error Handling / Validation:
+
+
+- Reject empty username or password
+- Enforce password complexity (optional)
+- Handle storage failures
+- Limit login attempts (optional)
+ 
+
+Objective:
+
+
+Create a simple user system for authentication to control access to file operations.
+Credentials should be stored securely, e.g., hashed passwords.
+ 
+
+How It Works:
+
+
+On registration, validate inputs and store username with hashed password.
+On login, check username exists and verify password hash matches.
+ 
+
+ 
+
+Function:
+
+int register_user(const char *username, const char *password);
+
+ 
+
+Returns:
+
+0 on success
+
+1 if username already exists
+
+2 for invalid input (empty fields)
+
+3 on storage error
+
+Function:
+
+int login_user(const char *username, const char *password);
+
+ 
+
+Returns:
+
+0 on successful login
+
+1 for incorrect username/password
+
+2 for invalid input
+
+3 if user not found
+
+ 
+
+To store usernames and passwords securely in Task 0, create a file such as users.db, where each line contains a username:hashed_password pair. Use a cryptographic hash function like SHA-256 (via OpenSSL in C) to hash passwords before storing them, so that plaintext passwords are never saved. During registration, check the file to ensure the username doesn't already exist, and if valid, append the new record. During login, hash the entered password and compare it with the stored hash for the given username to authenticate. Set file permissions to 0600 to restrict access and handle all file operations carefully with proper error checking.
+
+ 
+
+ 
+
+Task 1: Implement XOR Encryption (16-bit) in C
+
+Expected Input:
+
+
+- A plaintext string (e.g., "Hello World")
+- A 16-bit encryption key (an unsigned integer between 0 and 65535)
+ 
+
+Expected Output:
+
+
+- The XOR-encrypted version of the input string, encoded in hexadecimal or as modified characters
+- If the same encrypted output is XORed again using the same key, it returns the original input string
+ 
+
+Test Cases:
+
+
+Plaintext  Key (Decimal)  Encrypted Output (Hex)  Decrypted Output
+Hello       43690          1b060a0a0d              Hello
+XOR Test    65535          (hex string)   XOR Test
+ 
+
+Error Handling / Validation:
+
+
+- Reject empty strings
+- Validate that the key is a valid 16-bit unsigned integer (0 to 65535)
+- Handle memory allocation issues if any
+- Convert encrypted data to hex representation for safe display
+ 
+
+Objective:
+
+
+To understand and implement a basic, reversible encryption technique using bitwise XOR operation, suitable for educational or lightweight obfuscation use cases.
+
+How It Works:
+XOR (exclusive OR) returns 1 if bits differ, 0 if same.
+Encryption and decryption use same operation and key.
+ 
+
+Key Management Approaches:
+
+
+- Use a fixed 16-bit key for all characters (simplest)
+- Or alternate upper and lower 8 bits of key per character
+- Real keys should be stored securely, not hardcoded
+ 
+
+Function:
+
+char* xor_encrypt(const char *input_string, uint16_t key);
+
+Returns:
+
+Dynamically allocated encrypted string (hex or modified char)
+
+NULL on error (e.g., empty input or memory allocation failure)
+
+Function:
+
+char* xor_decrypt(const char *encrypted_string, uint16_t key);
+
+Returns:
+
+Dynamically allocated decrypted string
+
+NULL on error
+
+ 
+
+ 
+
+Task 2: File Creation with XOR Encryption
+
+Expected Input:
+
+
+- File name from user input
+- Text to be encrypted
+- 16-bit XOR encryption key
+ 
+
+Expected Output:
+
+
+- New file created with encrypted content
+- File permissions set to 0600 (rw-------)
+- Error if file already exists
+ 
+
+Test Cases:
+
+
+1. Create "test1.txt" with text "Hello" and key 12345 → file created with encrypted content
+2. Attempt to create "test1.txt" again → error due to existing file
+3. Create file with empty text → file created but empty
+4. Invalid file name → error
+ 
+
+Error Handling / Validation:
+
+
+- Validate inputs (filename, text, key)
+- Use O_CREAT | O_EXCL to avoid overwriting
+- Show errors with perror()
+- Assert buffer validity
+ 
+
+Objective:
+
+
+Learn secure file creation and write XOR-encrypted data using proper system calls and validation.
+ 
+
+ 
+
+How It Works:
+
+
+Create file, encrypt input text, write encrypted bytes, and set strict permissions.
+
+Function:
+
+int create_encrypted_file(const char *filename, const char *text, uint16_t key);
+
+Returns:
+
+0 on success
+
+1 if file already exists
+
+2 on invalid input
+
+3 on file creation or write error
+
+Important 
+
+To store file permissions for specific users, create a separate metadata file (e.g., permissions.db) where each line maps a filename to its owner's username and allowed operations. Use a format like:
+
+filename:owner:permissions
+
+For example:
+
+test1.txt:user1:rw
+
+secret.doc:user2:r
+
+Here:
+
+filename is the name of the file
+
+owner is the username who created or owns the file
+
+permissions is a custom string like rw (read/write), r (read-only), or d (deletable)
+
+This file can be read and checked in each operation (read, write, delete) to validate that the user has the appropriate access rights. Store this permissions.db securely and update it when files are created, modified, or deleted.
+
+.
+
+If you have given permission to read,write or delete it then any user can do that specific thing else only user who created that file can do that .
+
+ 
+
+Task 3: Reading Encrypted Files
+
+Expected Input:
+
+
+- Encrypted file path
+- XOR key used during encryption
+ 
+
+Expected Output:
+
+
+- Decrypted content displayed on screen
+ 
+
+Test Cases:
+
+
+1. Read "test1.txt" with correct key → outputs original text
+2. Read non-existent file → error message
+3. Read file with wrong key → garbage output (no crash)
+4. Read empty file → outputs nothing gracefully
+ 
+
+Error Handling / Validation:
+
+
+- Handle file not found and permission errors
+- Validate key range
+- Safe handling of empty or corrupted files
+ 
+
+Objective:
+
+
+Securely read and decrypt files encrypted with XOR, managing file I/O and errors.
+ 
+
+How It Works:
+
+
+Open file, read contents, XOR decrypt using key, print decrypted text.
+ 
+
+Function:
+
+char* read_encrypted_file(const char *filename, uint16_t key);
+
+ 
+
+Returns:
+
+Dynamically allocated decrypted string
+
+NULL on error (e.g., file not found, read error, invalid key)
+
+ 
+
+Task 4: Appending to Existing Encrypted Files
+
+Expected Input:
+
+
+- Existing encrypted file name
+- XOR key used for encryption
+- New content to append
+ 
+
+Expected Output:
+
+
+- File updated with new encrypted content appended
+- Decrypted file reflects updated content
+ 
+
+Test Cases:
+
+
+1. Append " World" to "test1.txt" with correct key → file updated, decrypted shows appended text
+2. Append empty string → no change
+3. Append with wrong key → error or corrupted file (avoid partial write)
+4. Append to non-existent file → error
+ 
+
+Error Handling / Validation:
+
+
+- Validate file existence and write permission
+- Use temporary file and atomic rename to avoid corruption
+- Handle invalid input gracefully
+ 
+
+Objective:
+
+
+Safely update encrypted files while preserving integrity using atomic file operations.
+ 
+
+How It Works:
+Decrypt original, append new plaintext, re-encrypt whole content, write temp file, rename.
+ 
+
+Function:
+
+int append_to_encrypted_file(const char *filename, uint16_t key, const char *new_data);
+
+ 
+
+Returns:
+
+0 on success
+
+1 if file doesn't exist
+
+2 on invalid input
+
+3 on read/write error
+
+4 if key is wrong and decryption failed
+
+ 
+
+ 
+
+Task 5: Logging File Operations
+
+Expected Input:
+
+
+- Operation performed (READ, WRITE, ENCRYPT, DECRYPT, DELETE)
+- Username performing operation
+- Filename involved
+ 
+
+Expected Output:
+
+
+- Log entry saved in log file with timestamp, username, operation, and filename
+ 
+
+Test Cases:
+
+
+1. Log a READ operation on "test1.txt" by "user1"
+2. Log a WRITE operation on "test2.txt" by "user2"
+3. Handle concurrent writes to log file safely
+ 
+
+Error Handling / Validation:
+
+
+- Handle log file open/write errors
+- Validate presence of username and operation
+- Handle file locking or atomic append to avoid race conditions
+ 
+
+Objective:
+
+
+Maintain an audit trail of file operations for security and debugging.
+ 
+
+How It Works:
+
+
+On each operation, format a log entry with timestamp and write atomically to log file.
+This ensures reliable auditing of file usage and user actions.
+ 
+
+ 
+
+Function:
+
+int log_operation(const char *username, const char *operation, const char *filename);
+
+Returns:
+
+0 on success
+
+1 for invalid input
+
+2 for log file error
+
+ 
+
+ 
+
+Task 6: Secure File Deletion
+
+Expected Input:
+
+
+- Filename to delete
+- Username requesting deletion
+ 
+
+Expected Output:
+
+
+- File securely deleted by overwriting content before unlinking
+- Only owner or authorized user allowed to delete
+- Confirmation message or error on failure
+ 
+
+Test Cases:
+
+
+1. Delete file owned by user → success
+2. Attempt to delete file owned by another user → denied
+3. Delete non-existent file → error
+4. Secure deletion overwrites file content before unlink
+ 
+
+Error Handling / Validation:
+
+
+- Validate user permissions before deletion
+- Check file existence
+- Handle file open/write errors during overwrite
+- Ensure complete overwrite (multiple passes optional)
+ 
+
+Objective:
+Implement secure file deletion that protects against file recovery and enforces ownership access control.
+ 
+
+How It Works:
+Overwrite file content with random or zero bytes multiple times, then unlink file from filesystem.
+ 
+
+Function:
+int secure_delete(const char *filename, const char *username);
+
+Returns:
+
+0 on successful secure deletion
+
+1 if file doesn't exist
+
+2 if user is not authorized
+
+3 on file I/O or unlink error
