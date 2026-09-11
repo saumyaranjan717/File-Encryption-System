@@ -113,6 +113,10 @@ sudo apt install libssl-dev
 
 ## Author
 
-Cybersecurity and systems programming project developed in C.
+**Saumya Ranjan**  
+Electronics and Computer Engineering  
+Thapar Institute of Engineering and Technology
+
+This project was developed as part of my hands-on work in C programming, file handling, authentication, and basic cybersecurity concepts.
 
 
